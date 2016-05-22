@@ -2,8 +2,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://tfjiang.github.io/</loc>
+    <loc>http://replace-this-with-your-hugo-site.com/</loc>
+    <lastmod>2016-05-22T23:29:36+08:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://replace-this-with-your-hugo-site.com/post/first/</loc>
+    <lastmod>2016-05-22T23:29:36+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://replace-this-with-your-hugo-site.com/about/</loc>
+    <lastmod>2016-05-22T23:28:39+08:00</lastmod>
   </url>
   
 </urlset>
