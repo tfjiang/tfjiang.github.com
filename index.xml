@@ -10,26 +10,124 @@
     <atom:link href="http://tfjiang.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>first</title>
-      <link>http://tfjiang.github.io/post/first/</link>
+      <title>美颜相机之磨皮&#43;美白</title>
+      <link>http://tfjiang.github.io/post/face_beautify/</link>
       <pubDate>Sun, 22 May 2016 23:29:36 +0800</pubDate>
       
-      <guid>http://tfjiang.github.io/post/first/</guid>
+      <guid>http://tfjiang.github.io/post/face_beautify/</guid>
       <description>
 
-&lt;h3 id=&#34;hello-hugo:e8fb9c67eba912c72729806db31eaa1b&#34;&gt;Hello Hugo&lt;/h3&gt;
+&lt;h2 id=&#34;磨皮功能:3e1a9d95fdd462bbec3ff1b72e4eb437&#34;&gt;磨皮功能&lt;/h2&gt;
 
-&lt;p&gt;这是我的第一篇博客&lt;/p&gt;
+&lt;p&gt;方法参考&lt;a href=&#34;http://www.cnblogs.com/Imageshop/p/4709710.html&#34;&gt;美颜&lt;/a&gt;。算法步骤记录如下：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;输入图像src，并且复制src给highPass；&lt;/li&gt;
+&lt;li&gt;对highPass图像进行保边滤波，这样的滤波器有双边滤波器、表面模糊、导向滤波等，这里选用双边滤波器；&lt;/li&gt;
+&lt;li&gt;计算高反差图像 highPass = highPass – src+128；&lt;/li&gt;
+&lt;li&gt;对highPass进行高斯滤波；&lt;/li&gt;
+&lt;li&gt;将highPass与src进行线性光融合，得到process图：
+process = (src *(100 – transparency)+(src + 2 * highPass -256) * transparency)/100。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;本算法中关键的恢复皮肤质感的步骤是第四步的高斯滤波，这个模糊的半径一般越大，质感越强，但是太大，磨皮效果就没有了，因此，这里需要把握合适的度。&lt;/p&gt;
+
+&lt;p&gt;第三步应用图像中常数128，也不一定是个定值，调大后，则处理后的图像整体偏亮，调小则图像偏暗。&lt;/p&gt;
+
+&lt;p&gt;第五步的图层的不透明度参数也是同样，调得越大，图片整体的斑点可能会偏多，偏小，图像会过于模糊，默认取&lt;code&gt;$50\%$&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;算法效率主要取决于第二步，也就是EPF滤波器，==&lt;strong&gt;需要想办法提速&lt;/strong&gt;==。&lt;/p&gt;
+
+&lt;h2 id=&#34;美白功能:3e1a9d95fdd462bbec3ff1b72e4eb437&#34;&gt;美白功能&lt;/h2&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;提供对比度：改善HSV颜色空间中亮度分量V。
+&lt;div&gt;
+    $$v(x,y) = \frac{\log(v(x,y)*(\beta-1)+1)}{\log(\beta)}$$
+&lt;/div&gt;
+注意h,s,v分量都是浮点型。此处&lt;code&gt;$\beta$&lt;/code&gt;是全局一致的，如果想要获得较好效果，就必须使用&lt;code&gt;$\beta(x,y)$&lt;/code&gt; 函数，每个像素点处用的&lt;code&gt;$\beta$&lt;/code&gt;不一样。具体见下。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;$\beta$&lt;/code&gt;函数构建方式：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;图像边界检测，使用sobel filter检测图像边界，构建一张bit表，根据一个给定的th值，判断每个像素是edge，或者不是。&lt;/li&gt;
+&lt;li&gt;对于不是edge的像素，设置mask区域，计算平均亮度值。mask区域内并非每个像素都参与计算，根据预设的threshold，只有当&lt;code&gt;$|v_p-v_c|&amp;lt;threshold$&lt;/code&gt;，p点的亮度才会参与计算平均值。则：
+&lt;div&gt;
+\beta=\left {
+\begin{array}{cc}
+10\frac{v(x,y)-mean}{v(x,y)}+2, &amp;amp; w(x,y) \geq mean\quad and\quad Sobel(x,y)  \leq th\
+2, &amp;amp; w(x,y) &amp;lt; mean \quad and \quad Sobel(x,y) &lt;th
+\\undefine, &amp; otherwise
+\end{array}\right.
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;对于是edge的像素，设置mask区域，在区域内选择V值最近的那个像素点的&lt;code&gt;$\beta$&lt;/code&gt;值&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;==&lt;strong&gt;注：以上第二步无效果，本应用真正需要的是仅对肤色区域提高亮度。&lt;/strong&gt;==&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;皮肤识别:3e1a9d95fdd462bbec3ff1b72e4eb437&#34;&gt;皮肤识别&lt;/h2&gt;
+
+&lt;p&gt;皮肤识别的方案有多种，主要是根据不同颜色空间的模型进行区分。&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;使用rgb颜色空间的二次多项式混合模型，通过&lt;code&gt;$r,g,b$&lt;/code&gt;来识别皮肤，识别规则为：
+&lt;div&gt;
+$$\begin{array}{cccc}
+R&lt;em&gt;1: &amp;amp; g &amp;gt; l&lt;/em&gt;{lower}&amp;reg;, g &amp;lt; l_{upper}&amp;reg;\
+R_2: &amp;amp; W(r,g) \leq 4e^{-4}\
+R_3: &amp;amp; R&amp;gt;G&amp;gt;B\
+R&lt;em&gt;4: &amp;amp; R-G \geq 45
+\end{array}$$
+&lt;/div&gt;
+上述 &lt;code&gt;$r,g,b$&lt;/code&gt;为归一化后的数据：
+&lt;div&gt;
+$$\begin{array}{ccc}
+r = &amp;amp; \frac{R}{R+G+B} \
+g = &amp;amp; \frac{G}{R+G+B} \
+b = &amp;amp; \frac{B}{R+G+B}
+\end{array}$$
+&lt;/div&gt;
+且：
+&lt;div&gt;
+$$\begin{array}{ccc}
+l&lt;/em&gt;{upper}&amp;reg; = &amp;amp; -1.3767r^2+1.0743r+0.1452\
+l&lt;em&gt;{lower}&amp;reg; = &amp;amp; -0.776r^2+0.5601r+0.1766 \
+W(r,g)  = &amp;amp; (r-0.33)^2+(g-0.33)^2
+\end{array}$$
+&lt;/div&gt;
+上述判断准则可以全部转换（近似）成整数运算：
+&lt;div&gt;
+$$\begin{array}{cccc}
+R&lt;/em&gt;{1,1}: &amp;amp; 10000*G*Sum &amp;gt; -7760*R^2+5601*R*Sum+1766*Sum^2\
+R_{1,2}: &amp;amp; 10000*G*Sum &amp;lt; -13767*R^2+10743*R*Sum+1452*Sum^2\
+R_2: &amp;amp; (100R-33Sum)^2+(100G-33Sum)^2\geq 4Sum^2\
+R_3: &amp;amp; R&amp;gt;G&amp;gt;B\
+R_4: &amp;amp; R-G \geq 45
+\end{array}$$
+&lt;/div&gt;
+==&lt;strong&gt;注：这个检测方法效果不理想，依赖输入图的白平衡等状态&lt;/strong&gt;==&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;使用&lt;code&gt;$YC_rC_b$&lt;/code&gt;颜色空间，其中&lt;code&gt;Y&lt;/code&gt;表示明亮度,&lt;code&gt;C_r,C_b&lt;/code&gt;表示颜色的色调和饱和度。黄种人肤色的大致分布区间如下：
+&lt;div&gt;
+$$C_r\in [137,173],\quad
+C_b\in [77,127]$$
+&lt;/div&gt;
+==&lt;strong&gt;注意：用这个方法可以比较容易得检测黄种人，但是对其他有色人种未必合适&lt;/strong&gt;。==&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;/ol&gt;
 </description>
     </item>
     
     <item>
-      <title>about</title>
+      <title>关于作者</title>
       <link>http://tfjiang.github.io/about/</link>
       <pubDate>Sun, 22 May 2016 23:28:39 +0800</pubDate>
       
       <guid>http://tfjiang.github.io/about/</guid>
-      <description></description>
+      <description>&lt;p&gt;男，属兔，性情温和，喜吃肉、火锅、日料。&lt;/p&gt;
+</description>
     </item>
     
   </channel>
