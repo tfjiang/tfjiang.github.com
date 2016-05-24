@@ -1,97 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
   <title>闲人草堂</title>
-
-  <meta name="description" content="闲人草堂"/>
-  <meta name="author" content=""/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <base href="http://tfjiang.github.io/" />
-
-  <link rel="stylesheet" href="css/fonts.css"/>
-  <link rel="stylesheet" href="css/normalize.css"/>
-  <link rel="stylesheet" href="css/skeleton.css"/>
-  <link rel="stylesheet" href="css/custom.css"/>
-  <link rel="stylesheet" href="genericons/genericons.css"/>
-  
-  
-  <link rel="stylesheet" href="highlight/tomorrow-night.css"/>
-
-  <link href="index.xml" rel="alternate" type="application/rss+xml" title="Posts + Links" />
-  <link href="links/index.xml" rel="alternate" type="application/rss+xml" title="Links" />
-  <link href="posts/index.xml" rel="alternate" type="application/rss+xml" title="Posts" />
-
-  
+  <link rel="stylesheet" href="http://tfjiang.github.io//css/style.css" />
+  <link rel="stylesheet" href="http://tfjiang.github.io//css/font-awesome.min.css" />
+  <link href='https://fonts.googleapis.com/css?family=Lato:100,300,400,600' rel='stylesheet' type='text/css'>
 </head>
 <body>
 
-<div id="flex-container">
-  <input type="checkbox" id="sidebar-menu-checkbox" />
-  <label for="sidebar-menu-checkbox" id="sidebar-menu"></label>
+<header class="header" style="background-color: #009DDC;
+    background-image: url(http://tfjiang.github.io//img/texture.png),linear-gradient(to bottom, #009DDC, #006ccb);background-repeat: repeat, no-repeat;background-position: left top, left top;background-size: 100px 100px, 100% 100%;" role="banner">
 
-  <div id="fake-sidebar"></div>
-  <div id="container">
+      <section id="branding">
+        <div id="site-title"><a href="http://tfjiang.github.io/">闲人草堂</a></div>
+        <nav id="mainmenu">
+          <ul>
+            <li><a href="http://tfjiang.github.io/">Articles</a></li>
+            
+            
+            
+          </ul>
+        </nav>
+        <input type="checkbox" id="op"></input>
+        <div class="lower">
+          <label for="op">Menu</label>
+        </div>
+        <div class="overlay overlay-hugeinc">
+          <label for="op"></label>
+          <nav id="menu" role="navigation">
+            <ul>
+            <li><a href="http://tfjiang.github.io/">Articles</a></li>
+            
+            
+            
+          </ul>
+          </nav>
+        </div>
+        <div class="clearfix"></div>
+      </section>
+      <div class="post-heading">
+        <h1> Articles 
+        </h1>
+      </div>
 
+    </header>
 
-<div class="posts">
+    <div id="container">
+
+<section id="content" role="main">
   
-</div>
-<hr />
-<div class="posts">
   
-</div>
+    <article>
+  <h2 class="post-title"><a href="http://tfjiang.github.io/post/face_beautify/" rel="bookmark" title="Link to 美颜相机之磨皮&#43;美白">美颜相机之磨皮&#43;美白</a></h2>
+  <span class="post-date">Published May 22, 2016</span>
+  <p>磨皮功能 方法参考美颜。算法步骤记录如下： 输入图像src，并且复制src给highPass； 对highPass图像进行保边滤波，这样的滤波器有双边滤波器、表面模糊、导向滤波等，这里选用双边滤波器； 计算高反差图像 highPass = highPass – src+128； 对highPass进行高斯滤波； 将highPass与src进行线性光融合，得到process图： process = (src *(100 – transparency)+(src + 2 * highPass -256) * transparency)/100。 本算法中关键的恢复皮肤质感的步骤是第四步的高斯滤波，这个模糊的半径一般越大，质感越强，但是太大，磨皮效果就没有了，因此，这里需要把握合适的度。 第三步应用图像中常数128，也不一定是个定值，调大后，则处理后的图像整体偏亮，调小则图像偏暗。 第五步的图层的不透明度参数也是同样，调得越大，图片整体的斑点可能会偏多，偏小，图像会过于模糊，默认取$50\%$。 算法效率主要取决于第二步，也就是EPF滤波器，需要想办法提速。 美白功能 提供对比度：改善HSV颜色空间中亮度分量V。 $$v(x,y) = \frac{\log(v(x,y)*(\beta-1)+1)}{\log(\beta)}$$ 注意h,s,v分量都是浮点型。此处$\beta$是全局一致的，如果想要获得较好效果，就必须使用$\beta(x,y)$ 函数，每个像素点处用的$\beta$不一样。具体见下。 $\beta$函数构建方式： 图像边界检测，使用sobel filter检测图像边界，构建一张bit表，根据一个给定的$\sigma$值，判断每个像素是edge，或者不是。 对于不是edge的像素，设置mask区域，计算平均亮度值。mask区域内并非每个像素都参与计算，根据预设的threshold，只有当$|v_p-v_c|&lt;threshold$，p点的亮度才会参与计算平均值。则： $$\beta=\left \{ \begin{array}{ccc} 10\frac{v(x,y)-mean}{v(x,y)}+2, &amp; w(x,y) \geq mean, Sobel(x,y) \leq \sigma\\ 2, &amp; w(x,y) &lt; mean, Sobel(x,y) \leq \sigma\\ undefined, &amp; Sobel(x,y) &gt; \sigma \end{array} \right.$$ 对于是edge的像素，设置mask区域，在区域内选择V值最近的那个像素点的$\beta$值 注：以上第二步无效果，本应用真正需要的是仅对肤色区域提高亮度。 皮肤识别 皮肤识别的方案有多种，主要是根据不同颜色空间的模型进行区分。</p>
+  <a class="moretag" href="http://tfjiang.github.io/post/face_beautify/">Continue reading &#8614;</a>
+  <hr class="divider">
+  </article>
+  
+  
+  
+    <article>
+  <h2 class="post-title"><a href="http://tfjiang.github.io/about/" rel="bookmark" title="Link to 关于作者">关于作者</a></h2>
+  <span class="post-date">Published May 22, 2016</span>
+  <p>男，属兔，性情温和，喜吃肉、火锅、日料。</p>
+  
+  <hr class="divider">
+  </article>
+  
+  <nav id="nav-below" class="navigation" role="navigation">
 
-<footer>
-  <p class="footnote">Copyright &copy; 2016: All rights reserved by <a href="mailto:"></a></p>
+
+	<div class="clearfix"></div>
+	<div class="pagination">Page 1 of 1</div>
+</nav>
+</section>
+<div class="clear"></div>
+</div>
+<footer id="footer" style="color: #7A7B7C; background-color: #3A3B3C;background-image: url(http://tfjiang.github.io//img/texture.png),linear-gradient(to bottom, #3A3B3C, #1d1e1e); background-repeat: repeat, no-repeat; background-position: left top, left top; background-size: 100px 100px, 100% 100%;">
+  <div id="footer-container">
+  
+  
+  
+  <div class="clearfix"></div>
+  </div>
+  <div id="copyright"></div>
 </footer>
-
-  </div>
-  <div id="container-mask"></div>
-<div id="sidebar">
-<div class="sidebar">
-  <div class="sidebar-about">
-    <a href="http://tfjiang.github.io/">
-      <img src="media/me.jpg" title="" alt="Me" />
-      <h4 class="sidebar-title">闲人草堂</h4>
-    </a>
-    <span class="sidebar-tagline"></span>
-  </div>
-  <nav class="sidebar-nav">
-    <ul class="sidebar-nav-list">
-      <li class="sidebar-nav-item nav-home">
-        <span class="genericon genericon-home"></span><a class="sidebar-link" href="http://tfjiang.github.io/">Home</a>
-      </li>
-      <li class="sidebar-nav-item">
-        <a class="genericon genericon-feed" href="posts/index.xml"></a><a class="sidebar-link" href="posts/">Posts/</a>
-      </li>
-      <li class="sidebar-nav-item">
-        <a class="genericon genericon-feed" href="links/index.xml"></a><a class="sidebar-link" href="links/">Links/</a>
-      </li>
-    </ul>
-  </nav>
-  <div class="sidebar-externals">
+<script src="http://tfjiang.github.io//js/highlight.pack.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad();
+  </script>
   
-  | <a class="genericon genericon-mail" href="mailto:"></a>
-  </div>
-  <div class="sidebar-bottom">
-    <hr />
-    <p>Powered by <a href="http://gohugo.io">Hugo</a>.</p> <p>Theme: <a href="https://github.com/TiTi/hurock">Hurock</a>.</p>
-    <p>Copyright &copy; 2016.</p> <p>All rights reserved.</p>
-  </div>
 </div>
-</div>
-
-</div>
-
-<script src="highlight/highlight.pack.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-
-
-
-
-
 </body>
+    <link rel="shortcut icon" href="http://tfjiang.github.io//img/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://tfjiang.github.io//img/apple-touch-icon.jpg" />
     <script type="text/javascript"
      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
    </script>
@@ -121,4 +126,5 @@ MathJax.Hub.Config({
 });
 </script>
 </html>
+
 
