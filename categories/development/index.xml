@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Development on 闲人草堂</title>
+    <link>http://tfjiang.github.io/categories/development/</link>
+    <description>Recent content in Development on 闲人草堂</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 29 May 2016 20:08:40 +0800</lastBuildDate>
+    <atom:link href="http://tfjiang.github.io/categories/development/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Polygon Meshing Processing 翻译之0--序言</title>
+      <link>http://tfjiang.github.io/polygon_mesh_processing/preface/</link>
+      <pubDate>Sun, 29 May 2016 20:08:40 +0800</pubDate>
+      
+      <guid>http://tfjiang.github.io/polygon_mesh_processing/preface/</guid>
+      <description>&lt;p&gt;提笔翻译《Polygon Meshing Processing》一书时，内心诚惶诚恐，
+五位作者都是图形领域的大牛，若是翻译有误，恐耽误读者。但最后还是决定开始翻译，既当是锤炼自己的思维，
+又可以重拾博士生涯所学，不想因为工作而荒废了五年辛勤的积淀。&lt;/p&gt;
+
+&lt;p&gt;鉴于此书很长，每一章节都牵扯很多，我需要细细琢磨才能下笔。因而拟定翻译时间大概需要20个月。呃，每两月一章似乎有点慢，不过考虑到有些地方需要贴代码，应该也还可以接受吧。（不接受也没办法，来打我呀~~）
+&lt;img src=&#34;http://o7xuyk0k8.bkt.clouddn.com/cover.png&#34; alt=&#34;image&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
