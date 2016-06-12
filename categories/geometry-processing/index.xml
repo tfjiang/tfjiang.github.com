@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Geometry Processing on 闲人草堂</title>
-    <link>http://tfjiang.github.io/categories/geometry-processing/</link>
-    <description>Recent content in Geometry Processing on 闲人草堂</description>
+    <title>Geometry Processing on </title>
+    <link>http://tfjiang.coding.me/tfjiang/categories/geometry-processing/</link>
+    <description>Recent content in Geometry Processing on </description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
     <lastBuildDate>Sun, 29 May 2016 20:08:40 +0800</lastBuildDate>
-    <atom:link href="http://tfjiang.github.io/categories/geometry-processing/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://tfjiang.coding.me/tfjiang/categories/geometry-processing/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Polygon Meshing Processing 翻译之0--序言</title>
-      <link>http://tfjiang.github.io/polygon_mesh_processing/preface/</link>
+      <link>http://tfjiang.coding.me/tfjiang/polygon_mesh_processing/preface/</link>
       <pubDate>Sun, 29 May 2016 20:08:40 +0800</pubDate>
       
-      <guid>http://tfjiang.github.io/polygon_mesh_processing/preface/</guid>
+      <guid>http://tfjiang.coding.me/tfjiang/polygon_mesh_processing/preface/</guid>
       <description>&lt;p&gt;提笔翻译《Polygon Meshing Processing》一书时，内心诚惶诚恐，
 五位作者都是图形领域的大牛，若是翻译有误，恐耽误读者。但最后还是决定开始翻译，既当是锤炼自己的思维，
 又可以重拾博士生涯所学，不想因为工作而荒废了五年辛勤的积淀。&lt;/p&gt;
